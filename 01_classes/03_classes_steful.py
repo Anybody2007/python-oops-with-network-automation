@@ -17,6 +17,7 @@ class Firewall:
         self.password = password
         # Declaration here is the beautiful safety pin, because if someone don't run the log_in() but runs backup or reboot this will crash the code!!!
         self.logged_in = False
+        self.login_attempts = 0
 
     def show_info(self):
         logger.info("="*20)
@@ -25,11 +26,13 @@ class Firewall:
         logger.info(f"IP       : {self.mgmt_ip}")
         logger.info(f"Username : {self.username}")
         logger.info(f"Password : **************")
+        logger.info(f"login Attempts : {self.login_attempts}")
         logger.info("="*20)
 
     def login(self):
         logger.info(f"Trying to login to device {self.hostname} with the ip {self.mgmt_ip}")
         self.logged_in = True
+        self.login_attempts += 1
         if not self.logged_in:
             logger.warning(f"Login failed for {self.hostname} with the ip {self.mgmt_ip}, check the device errors!!!")
         else:
