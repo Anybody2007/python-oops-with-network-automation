@@ -1,3 +1,4 @@
 hostname,vendor,management_ip,username,password
-FGT-HQ-A,Fortigate,192.168.100.100,admin,admin1234
-FGT-HQ-P,Fortigate,192.168.100.101,admin,admin1234
+FGT-HQ-A,FortiGate,192.168.100.100,admin,admin1234
+FGT-HQ-P,FortiGate,192.168.100.101,admin,admin1234
+,FortiGate,192.168.100.101,admin,admin1234
