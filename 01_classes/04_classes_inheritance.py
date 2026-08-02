@@ -30,28 +30,33 @@ class Firewall:
         logger.info(f"Hostname : {self.hostname}, Vendor : {self.vendor} ,Username : {self.username}, Password : ********")
 
 
-    def send_request(self, method : str, url : str, payload : str = ""):
+    def send_request(self, method : str, url : str, payload : str = "") -> dict:
         if not self.session:
             raise RuntimeError("Session not created. Call create_session() first")
         try:
-            response = self.session.request(method=method,url=url,timeout=10)
-            # Nedd to change this things, because we should able to do any method
-            # self.response = self.session.get()
-            response.raise_for_status()
-            logger.info(f"HTTP : {response.status_code} successful {method}")
-            logger.info(response.text)
+            if not payload:
+                response = self.session.request(method=method,url=url,timeout=10)
+                # Nedd to change this things, because we should able to do any method
+                # self.response = self.session.get()
+            else:
+                response = self.session.request(method=method,url=url,timeout=10,json=payload)
+                # Nedd to change this things, because we should able to do any method
+                # self.response = self.session.get()
+                response.raise_for_status()
+                logger.info(f"HTTP : {response.status_code} successful {method}")
+                logger.info(response.text)
         except requests.exceptions.ConnectTimeout:
             logger.error("Connection max timeout ...")
-            sys.exit(1)
+            raise
         except requests.exceptions.ConnectionError:
             logger.error("Please check the firewall connection")
-            sys.exit(1)
+            raise
         except requests.exceptions.HTTPError as e:
             logger.error(f"Request response not success : {e}")
-            sys.exit(1)
+            raise
         except Exception as e:
             logger.error(f"Error : {e}")
-            sys.exit(1)
+            raise
 
 class Fortigate(Firewall):
     def create_session(self):
@@ -136,11 +141,8 @@ def main():
         fw = Firewall(hostname=hostname,vendor=vendor,ip=ip,username=username,password=password)
         class_firewall.append(fw)
     for firewall in class_firewall:
-        # firewall.get_info()
         Fortigate.create_session(firewall)
         Fortigate.fgt_get_address(firewall)
-
-
 
 
 if __name__ == "__main__":
