@@ -4,6 +4,10 @@ import sys
 import csv
 import ipaddress
 import requests
+import urllib3
+
+# Disabling ssl warnnings
+urllib3.disable_warnings()
 
 # Logging Configuration Level Set
 logging.basicConfig(level=logging.INFO)
@@ -19,16 +23,23 @@ class Firewall:
         self.password = password
         self.login_attempts = 0
         self.logged_in = False
+        self.session = False
+        self.payload = ""
 
     def show_info(self):
         logger.info(f"Hostname : {self.hostname}, Vendor : {self.vendor} ,Username : {self.username}, Password : ********")
 
-    def get_info(self):
+
+    def send_request(self, method : str, url : str, payload : str = ""):
+        if not self.session:
+            raise RuntimeError("Session not created. Call create_session() first")
         try:
-            self.response = self.session.get()
-            self.response.raise_for_status()
-            logger.info(f"Response status : {self.response.status_code}")
-            return self.response.json()
+            response = self.session.request(method=method,url=url,timeout=10)
+            # Nedd to change this things, because we should able to do any method
+            # self.response = self.session.get()
+            response.raise_for_status()
+            logger.info(f"HTTP : {response.status_code} successful {method}")
+            logger.info(response.text)
         except requests.exceptions.ConnectTimeout:
             logger.error("Connection max timeout ...")
             sys.exit(1)
@@ -45,14 +56,16 @@ class Firewall:
 class Fortigate(Firewall):
     def create_session(self):
         self.session = requests.Session()
-        self.header = {"Authorization" : f"Bearer {self.password}"}
-        self.session.headers.update(self.header)
-        self.session.verify(False)
+        # We should use local variable here
+        header = {"Authorization" : f"Bearer {self.password}"}
+        self.session.headers.update(header)
+        # Verify is not a function
+        self.session.verify = False
+        self.logged_in = True
 
     def fgt_get_address(self):
-        self.url = f"https://{self.ip}/restapi/v10.0/Objects/Addresses"
-        self.session(url=self.url)
-        self.response = self.get_info()
+        url = f"https://{self.ip}/api/v2/cmdb/firewall/address"
+        self.send_request(method="GET",url=url)
 
 def read_csv_inventory(csv_file : str, vendor_list : list) -> list:
     try:
@@ -123,7 +136,11 @@ def main():
         fw = Firewall(hostname=hostname,vendor=vendor,ip=ip,username=username,password=password)
         class_firewall.append(fw)
     for firewall in class_firewall:
-        firewall.get_info()
+        # firewall.get_info()
+        Fortigate.create_session(firewall)
+        Fortigate.fgt_get_address(firewall)
+
+
 
 
 if __name__ == "__main__":
