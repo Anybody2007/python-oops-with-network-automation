@@ -34,7 +34,7 @@ class Firewall:
     def send_request(self, methods : str, payloads:dict, urls: str, param: dict) -> dict:
         try:
             if methods == "get":
-                response = self.session.request(method=methods, url=urls, headers=self.header, timeout=10)
+                response = self.session.request(method=methods, url=urls, headers=self.header, timeout=10, params=param)
             else:
                 response = self.session.request(method=methods,url=urls,headers=self.header,timeout=10,json=payloads)
             response.raise_for_status()

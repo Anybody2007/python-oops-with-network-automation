@@ -11,10 +11,12 @@ class PaloAlto(Firewall):
         self.header = {"X-PAN-KEY" : self.key}
         self.panorama_managed = panorama_managed
 
-    def get_addreses(self):
+    def get_addresses(self):
         url = f"https://{self.ip}/restapi/v10.0/Objects/Addresses"
-        json_response = self.send_request(methods="get",payloads=None,urls=url,param=None)
+        params = {"location":"vsys","vsys":"vsys1"}
+        json_response = self.send_request(methods="get",payloads=None,urls=url,param=params)
         entry_list = json_response.get("result",{}).get("entry",[])
+        logger.info(f" HTTP : {json_response}")
 
     def create_addresses(self):
         url = f"https://{self.ip}/restapi/v10.0/Objects/Addresses"

@@ -9,9 +9,9 @@ class Fortigate(Firewall):
         super().__init__(hostname,vendor,username,ip,key)
         self.header = {"Authorization" : f"Bearer {self.key}"}
 
-    def build_header(self) -> dict:
-        header = {"Authorization" : f"Bearer {self.key}"}
-        return header
+    # def build_header(self) -> dict:
+    #     header = {"Authorization" : f"Bearer {self.key}"}
+    #     return header
 
     def get_addresses(self):
         url = f"https://{self.ip}/api/v2/cmdb/firewall/address"
