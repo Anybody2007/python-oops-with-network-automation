@@ -30,7 +30,7 @@ class Firewall:
         logger.info(f"Hostname : {self.hostname}, Vendor : {self.vendor} ,Username : {self.username}, Password : ********")
 
 
-    def send_request(self, method : str, url : str, payload : str = "") -> dict:
+    def send_request(self, method : str, url : str, payload : str = ""):
         if not self.session:
             raise RuntimeError("Session not created. Call create_session() first")
         try:
@@ -42,9 +42,9 @@ class Firewall:
                 response = self.session.request(method=method,url=url,timeout=10,json=payload)
                 # Nedd to change this things, because we should able to do any method
                 # self.response = self.session.get()
-                response.raise_for_status()
-                logger.info(f"HTTP : {response.status_code} successful {method}")
-                logger.info(response.text)
+            response.raise_for_status()
+            logger.info(f"HTTP : {response.status_code} successful {method}")
+            logger.info(response.text)
         except requests.exceptions.ConnectTimeout:
             logger.error("Connection max timeout ...")
             raise
