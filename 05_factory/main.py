@@ -1,5 +1,6 @@
 from paloalto import PaloAlto
 from fortigate import FortiGate
+from factory import Factory
 from logging_basic_config import logging_basic_config
 import urllib3
 urllib3.disable_warnings()
@@ -14,10 +15,14 @@ def firewall_factory(vendor_class_map: dict, entry: list) -> list:
     return firewall_list
 
 def main():
-    vendor_class_mapping = {"FortiGate": FortiGate, "PaloAlto": PaloAlto}
     entry = [{"vendor": "FortiGate","ip": "192.168.35.249","key": "h36bGs4p5rpcmNwf8dw7Hrs5Qq50hQ"},
              {"vendor": "PaloAlto", "ip": "192.168.35.248","key":"LUFRPT0zVTZKMldwdE5qd21DeWVtaG5vZGFQT3pjS0U9bkJodVJ5VDVQanJDdVVYNFFPbm5MNFdoL0R6TkltU2cvVDNsa0FpWjZhb2xweUt1T1lPdmhUbkJPbTVyVGQ3dA=="}]
-    firewall_list = firewall_factory(vendor_class_map=vendor_class_mapping,entry=entry)
+    firewall_list = []
+    for item in entry:
+        fw = Factory(ip=item.get("ip"),vendor=item.get("vendor"),key=item.get("key"))
+        firewall = fw.create_firewall()
+        firewall_list.append(firewall)
+        
     for firewall in firewall_list:
         firewall.show_info()
         firewall.create_session()
