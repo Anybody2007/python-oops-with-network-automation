@@ -1,17 +1,14 @@
-from firewall import Firewall
+from firewall import Firewall, register_firewall
 from logging_basic_config import logging_basic_config
 import logging
+
 logging_basic_config()
 logger = logging.getLogger(__name__)
 
+@register_firewall("FortiGate")
 class Fortigate(Firewall):
-    def __init__(self, hostname: str, vendor: str, username: str ,ip: str, key: str):
-        super().__init__(hostname,vendor,username,ip,key)
+    def get_header(self):
         self.header = {"Authorization" : f"Bearer {self.key}"}
-
-    # def build_header(self) -> dict:
-    #     header = {"Authorization" : f"Bearer {self.key}"}
-    #     return header
 
     def get_addresses(self):
         url = f"https://{self.ip}/api/v2/cmdb/firewall/address"

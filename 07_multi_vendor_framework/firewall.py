@@ -1,12 +1,22 @@
 import requests
 import logging
 from logging_basic_config import logging_basic_config
+from abc import ABC, abstractmethod
 
 logging_basic_config()
 logger = logging.getLogger(__name__)
 
+FIREWALL_LIST = {}
 
-class Firewall:
+def register_firewall(vendor):
+    def wrapper(cls):
+        FIREWALL_LIST[vendor] = cls
+        logger.info(f"Registering {vendor} : {cls.__name__}")
+        return cls
+    return wrapper
+
+
+class Firewall(ABC):
     def __init__(self, hostname: str, vendor: str, username: str ,ip: str, key: str):
         self.hostname = hostname
         self.vendor = vendor
@@ -43,3 +53,15 @@ class Firewall:
             logger.warning(f"API Response Code : {response.status_code}")
         logger.debug(response.text)
         return(response.json())
+
+    @abstractmethod
+    def get_header(self):
+        pass
+
+    @abstractmethod
+    def get_addresses(self):
+        pass
+
+    @abstractmethod
+    def create_addresses(self):
+        pass
