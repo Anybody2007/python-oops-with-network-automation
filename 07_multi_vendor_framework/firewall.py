@@ -43,7 +43,7 @@ class Firewall(ABC):
 
     def send_request(self, methods : str, payloads:dict, urls: str, param: dict) -> dict:
         try:
-            if methods == "get":
+            if methods == "get" :
                 response = self.session.request(method=methods, url=urls, headers=self.header, timeout=10, params=param)
             else:
                 response = self.session.request(method=methods,url=urls,headers=self.header,timeout=10,json=payloads)
@@ -52,7 +52,7 @@ class Firewall(ABC):
         except requests.exceptions.HTTPError:
             logger.warning(f"API Response Code : {response.status_code}")
         logger.debug(response.text)
-        return(response.json())
+        return(response)
 
     @abstractmethod
     def get_header(self):
@@ -64,4 +64,8 @@ class Firewall(ABC):
 
     @abstractmethod
     def create_addresses(self):
+        pass
+
+    @abstractmethod
+    def get_address_group(self):
         pass

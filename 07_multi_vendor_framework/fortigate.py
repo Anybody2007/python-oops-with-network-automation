@@ -12,14 +12,21 @@ class Fortigate(Firewall):
 
     def get_addresses(self):
         url = f"https://{self.ip}/api/v2/cmdb/firewall/address"
+        self.get_header()
         response = self.send_request(methods="get",urls=url, payloads=None, param=None)
         logger.info(f" HTTP : {response}")
         return response
 
     def create_addresses(self, payload : dict) -> dict:
         url = f"https://{self.ip}/api/v2/cmdb/firewall/address"
-        header = self.buid_header()
+        self.get_header()
         response = self.send_request(methods="post",urls=url, payloads=payload, param=None)
         logger.info(f" HTTP : {response}")
         return response
-        
+
+    def get_address_group(self):
+        url = f"https://{self.ip}/api/v2/cmdb/firewall/addrgrp"
+        self.get_header()
+        response = self.send_request(methods="get",urls=url,param=None,payloads=None)
+        logger.info(f"HTTP : {response}")
+        return response
