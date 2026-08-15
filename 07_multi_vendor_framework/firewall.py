@@ -45,14 +45,15 @@ class Firewall(ABC):
         try:
             if methods == "get" :
                 response = self.session.request(method=methods, url=urls, headers=self.header, timeout=10, params=param)
-            else:
+            elif methods == "post":
                 response = self.session.request(method=methods,url=urls,headers=self.header,timeout=10,json=payloads)
             response.raise_for_status()
             logger.info(f"API Response Code : {response.status_code}")
         except requests.exceptions.HTTPError:
             logger.warning(f"API Response Code : {response.status_code}")
         logger.debug(response.text)
-        return(response)
+        json_response = response.json()
+        return(json_response)
 
     @abstractmethod
     def get_header(self):

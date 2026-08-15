@@ -3,6 +3,8 @@ import logging
 from paloalto import PaloAlto
 from fortigate import Fortigate
 import urllib3
+from trim_fuctions.trim_addresses import get_exsiting_address
+from trim_fuctions.trim_groups import get_address_groups
 
 urllib3.disable_warnings()
 
@@ -17,8 +19,10 @@ def main():
     for firewall in firewalls:
         # firewall.show_info()
         firewall.create_session()
-        # firewall.get_addresses()
-        firewall.get_address_group()
+        addresses = firewall.get_addresses()
+        exsiting_ips, exsiting_fqdns = get_exsiting_address(addresses)
+        address_groups = firewall.get_address_group()
+        exsiting_addr_groups = get_address_groups(address_groups)
 
 if __name__ == "__main__":
     main()
