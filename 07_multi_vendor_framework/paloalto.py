@@ -34,3 +34,6 @@ class PaloAlto(Firewall):
 
     def get_address_group(self):
         return super().get_address_group()
+
+    def create_address_group(self):
+        return super().create_address_group()

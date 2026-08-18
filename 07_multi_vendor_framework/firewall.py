@@ -70,3 +70,7 @@ class Firewall(ABC):
     @abstractmethod
     def get_address_group(self):
         pass
+
+    @abstractmethod
+    def create_address_group(self):
+        pass

@@ -10,7 +10,8 @@ def get_exsiting_address(json_response: dict) -> tuple[list, list]:
         item_type = item.get("type")
         item_name = item.get("name")
         if item_type == "ipmask":
-            item_subnet = item.get("subnet")
+            item_ip, item_network = item.get("subnet").split()
+            item_subnet = str(ipaddress.IPv4Network(f"{item_ip}/{item_network}"))
             exsiting_ips.append({"name":item_name, "ip": item_subnet})
         elif item_type == "fqdn":
             item_fqdn = item.get("fqdn")

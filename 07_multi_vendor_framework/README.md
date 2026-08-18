@@ -10,6 +10,7 @@ Instead of writing vendor-specific scripts for FortiGate, Palo Alto, or Check Po
 
 ```
 07_multi_vendor_framework/
+├── FRAMEWORK_EVOLUTION_ROADMAP.md  # FAANG-Grade Architecture Blueprint & Task Progression Tracker
 ├── firewall.py                 # Abstract Base Class (Firewall) & Plugin Registration Decorator
 ├── fortigate.py                # FortiGate REST API Implementation
 ├── paloalto.py                 # Palo Alto REST API Implementation

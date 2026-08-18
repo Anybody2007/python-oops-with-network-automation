@@ -14,7 +14,7 @@ class Fortigate(Firewall):
         url = f"https://{self.ip}/api/v2/cmdb/firewall/address"
         self.get_header()
         response = self.send_request(methods="get",urls=url, payloads=None, param=None)
-        logger.debug(f" HTTP : {response}")
+        logger.info(f" HTTP : {response}")
         result = response.get("results",[])
         return result
 
@@ -30,5 +30,15 @@ class Fortigate(Firewall):
         self.get_header()
         response = self.send_request(methods="get",urls=url,param=None,payloads=None)
         result = response.get("results", [])
+        print(result)
         logger.debug(f"HTTP : {response}")
         return result
+
+    def create_address_group(self, payload: dict) -> dict:
+        url = f"https://{self.ip}/api/v2/cmdb/firewall/addrgrp"
+        self.get_header()
+        response = self.send_request(methods="post",urls=url,param=None,payloads=payload)
+        # result = response.get("results", [])
+        logger.debug(f"HTTP : {response}")
+        # print(response)
+        return response
